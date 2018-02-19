@@ -1,25 +1,18 @@
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main implements Handler{
 
     Display display;
-    Analyzer analyzer;
     ArrayList<Field> fields;
 
     private void solve() {
-        Scanner in = new Scanner(System.in);
-
         display = new Display();
-        analyzer = new Analyzer(this);
         fields = new ArrayList<>();
 
-        int n = in.nextInt();
-        in.nextLine();
-        while(n-- > 0) {
-            analyzer.analyze(in.nextLine());
-        }
-        display.attach(fields);
+        Analyzer.analyze(System.in, this);
+        display.attachAll(fields);
         display.show();
     }
 
@@ -47,11 +40,27 @@ interface Handler {
 }
 
 class Analyzer {
+    public static void analyze(InputStream is, Handler handler){
+        new Analyzer(is, handler).analyze();
+    }
 
+    InputStream is;
     Handler handler;
 
-    public Analyzer(Handler handler) {
+    private Analyzer(InputStream is, Handler handler) {
+        this.is = is;
         this.handler = handler;
+    }
+
+    public void analyze(){
+        try (Scanner in = new Scanner(is)) {
+	        int n = in.nextInt();
+	        in.nextLine();
+	        while(n-- > 0) {
+	            analyze(in.nextLine());
+	        }
+        } finally {
+        }
     }
 
     public void analyze(String str) {
@@ -221,11 +230,15 @@ class Display {
         }
     }
 
-    public void attach(ArrayList<Field> fields){
+    public void attach(Field field){
+        for(int i = 0; i < field.length; i++) {
+            setChar(field.getChar(i), field.posY, field.posX + i);
+        }
+    }
+
+    public void attachAll(ArrayList<Field> fields){
         for(Field f: fields){
-            for(int i = 0; i < f.length; i++) {
-                setChar(f.getChar(i), f.posY, f.posX + i);
-            }
+            attach(f);
         }
     }
 
