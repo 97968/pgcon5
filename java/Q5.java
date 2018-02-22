@@ -14,6 +14,14 @@ public class Q5 {
         }
     }
 
+    public static String createFillStr(int length) {
+        StringBuilder sb = new StringBuilder();
+        for(int i = 0; i < length; i++) {
+            sb.append('*');
+        }
+        return sb.toString();
+    }
+
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
 
@@ -38,7 +46,7 @@ public class Q5 {
             int pos = str.indexOf(p.phrase);
             while (pos != -1) {
                     score += p.value;
-                    str = str.substring(0, pos) + str.substring(pos + p.phrase.length());
+                    str = str.substring(0, pos) + createFillStr(p.phrase.length())+ str.substring(pos + p.phrase.length());
                 pos = str.indexOf(p.phrase);
             }
         }
